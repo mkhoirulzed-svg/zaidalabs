@@ -92,6 +92,10 @@ a{
 }
 
 .brand-mark{
+  cursor:pointer;
+  user-select:none;
+  transform-origin:center;
+  transition:transform .25s ease, filter .25s ease;
   width:44px;
   height:44px;
   border-radius:14px;
@@ -306,6 +310,8 @@ h1{
 }
 
 .big-z{
+  cursor:pointer;
+  user-select:none;
   position:relative;
   font-size:10rem;
   font-weight:800;
@@ -685,6 +691,32 @@ h1{
   to{transform:rotate(360deg)}
 }
 
+@keyframes zedTap{
+  0%{transform:scale(1) rotate(0);filter:brightness(1)}
+  35%{transform:scale(1.22) rotate(-8deg);filter:brightness(1.35) drop-shadow(0 0 18px rgba(34,211,238,.8))}
+  70%{transform:scale(.94) rotate(7deg)}
+  100%{transform:scale(1) rotate(0);filter:brightness(1)}
+}
+@keyframes zedReveal{
+  0%{transform:scale(1);filter:drop-shadow(0 0 0 rgba(34,211,238,0))}
+  45%{transform:scale(1.28);filter:drop-shadow(0 0 28px rgba(34,211,238,.9))}
+  100%{transform:scale(1);filter:drop-shadow(0 0 12px rgba(59,130,246,.45))}
+}
+.zed-tap-effect{animation:zedTap .42s ease}
+body.zed-awakened .big-z{animation:zedReveal 1s ease both}
+body.zed-awakened .brand-mark{animation:zedReveal .8s ease both}
+.zed-message{
+  position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);
+  z-index:100;padding:13px 20px;border:1px solid rgba(255,255,255,.75);
+  border-radius:999px;color:#fff;background:linear-gradient(135deg,#2563eb,#06b6d4,#8b5cf6);
+  box-shadow:0 16px 40px rgba(37,99,235,.3);font-size:.88rem;font-weight:800;
+  opacity:0;pointer-events:none;transition:.3s ease;
+}
+.zed-message.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(prefers-reduced-motion:reduce){
+  .zed-tap-effect,body.zed-awakened .big-z,body.zed-awakened .brand-mark{animation:none}
+}
+
 @media(max-width:900px){
   .hero{
     grid-template-columns:1fr;
@@ -939,9 +971,9 @@ h1{
             Al-Qur'an digital lengkap dengan terjemahan Indonesia, audio murottal,
             dzikir, doa, dan fitur Islami lainnya.
           </p>
-          <a class="app-link" href="#">
-            Segera Hadir
-            <i class="fa-regular fa-clock"></i>
+          <a class="app-link" href="https://alquran.zaidalabs.com">
+            Buka Aplikasi
+            <i class="fa-solid fa-arrow-right"></i>
           </a>
         </article>
 
@@ -953,7 +985,7 @@ h1{
             Kalkulator klinis sederhana untuk membantu perhitungan medis secara cepat,
             akurat, dan praktis.
           </p>
-          <a class="app-link" href="https://zedkalkulator.site">
+          <a class="app-link" href="https://kalkulator.zaidalabs.com">
             Lihat Aplikasi
             <i class="fa-solid fa-arrow-right"></i>
           </a>
@@ -1054,7 +1086,7 @@ h1{
     <div>
       <h4>Kontak</h4>
       <a href="mailto:mkhoirulzed@gmail.com">mkhoirulzed@gmail.com</a>
-      <a href="https://zedkalkulator.site">zedkalkulator.site</a>
+      <a href="https://kalkulator.zaidalabs.com">kalkulator.zaidalabs.com</a>
     </div>
   </footer>
 </div>
@@ -1064,6 +1096,47 @@ h1{
 </a>
 
 <script>
+// Zed Easter Egg: ketuk huruf Z lima kali untuk membuka animasi rahasia.
+let zedTapCount = 0;
+let zedTapTimer;
+let zedMessageTimer;
+const zedMessage = document.createElement('div');
+zedMessage.className = 'zed-message';
+zedMessage.setAttribute('role', 'status');
+zedMessage.textContent = '✨ ZAIDA Labs — Keep creating!';
+document.body.appendChild(zedMessage);
+
+document.querySelectorAll('.brand-mark, .big-z').forEach((zed) => {
+  zed.setAttribute('tabindex', '0');
+  zed.setAttribute('role', 'button');
+  zed.setAttribute('aria-label', 'Ketuk huruf Z untuk melihat kejutan');
+  const activateZed = (event) => {
+    event.preventDefault();
+    zed.classList.remove('zed-tap-effect');
+    void zed.offsetWidth;
+    zed.classList.add('zed-tap-effect');
+    zedTapCount++;
+    clearTimeout(zedTapTimer);
+    zedTapTimer = setTimeout(() => { zedTapCount = 0; }, 2200);
+    if (zedTapCount >= 5) {
+      document.body.classList.remove('zed-awakened');
+      void document.body.offsetWidth;
+      document.body.classList.add('zed-awakened');
+      zedMessage.classList.add('show');
+      clearTimeout(zedMessageTimer);
+      zedMessageTimer = setTimeout(() => {
+        zedMessage.classList.remove('show');
+        document.body.classList.remove('zed-awakened');
+      }, 2400);
+      zedTapCount = 0;
+    }
+  };
+  zed.addEventListener('click', activateZed);
+  zed.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') activateZed(event);
+  });
+});
+
 const revealElements = document.querySelectorAll('.reveal');
 
 const revealObserver = new IntersectionObserver((entries) => {
