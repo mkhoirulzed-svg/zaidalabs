@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ZAIDA Labs - Digital Apps Publisher</title>
 <meta name="description" content="ZAIDA Labs mengembangkan aplikasi digital ringan, modern, dan bermanfaat untuk kebutuhan harian, ibadah, edukasi, kesehatan, dan produktivitas.">
+<meta name="theme-color" content="#0b1f45">
+<meta name="application-name" content="ZAIDA Labs">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/icon.svg">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -447,8 +452,7 @@ h1{
   padding:30px;
   background:rgba(255,255,255,.72);
   border:var(--border);
-  backdrop-filter:blur(18px);
-  box-shadow:var(--soft-shadow);
+  backdrop-filter:blur(18px);  box-shadow:var(--soft-shadow);
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -897,8 +901,7 @@ body.zed-awakened .brand-mark{animation:zedReveal .8s ease both}
         </div>
       </div>
 
-      <div class="hero-visual">
-        <div class="orbit"></div>
+      <div class="hero-visual">        <div class="orbit"></div>
         <div class="hero-card">
           <div class="big-z">Z</div>
           <div class="glow-base"></div>
@@ -1198,5 +1201,14 @@ revealElements.forEach((el, index) => {
 });
 </script>
 
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js', { scope: '/' })
+      .then((registration) => console.info('ZAIDA Labs PWA aktif:', registration.scope))
+      .catch((error) => console.warn('PWA service worker gagal didaftarkan:', error));
+  });
+}
+</script>
 </body>
 </html>
